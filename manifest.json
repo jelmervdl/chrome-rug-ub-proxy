@@ -1,0 +1,18 @@
+{
+  "name": "Use UB Proxy",
+  "version": "1.0",
+  "description": "Opens a page through RuG UB proxy",
+  "background_page": "background.html",
+  "page_action" :
+  {
+    "default_icon": "favicon.ico",
+    "default_title": "Load via UB Proxy"
+  },
+  "permissions" : [
+    "tabs"
+  ],
+  "icons" : {
+    "48" : "logo-48.png",
+    "128" : "logo-128.png"
+  }
+}
