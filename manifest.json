@@ -1,7 +1,7 @@
 {
   "name": "Use UB Proxy",
   "version": "1.0",
-  "description": "Opens a page through RuG UB proxy",
+  "description": "Opens a page through UB proxy of the University of Groningen. Note: you need a student or staff account.",
   "background_page": "background.html",
   "page_action" :
   {
