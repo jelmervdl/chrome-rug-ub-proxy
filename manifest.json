@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "description": "Opens a page through UB proxy of the University of Groningen. Note: you need a student or staff account.",
   "background": {
-    "page": "background.html"
+    "scripts": ["background.js"]
   },
   "page_action" :
   {
