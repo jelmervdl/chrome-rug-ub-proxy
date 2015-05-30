@@ -4,7 +4,7 @@ var URL = function(url)
 		this.parse(url);
 }
 
-URL.prototype.pattern = /^(?:(.+?)\:\/\/)?([^\/]+)(\/[^?]+)?(\?.+?)?$/;
+URL.prototype.pattern = /^(((([^:\/#\?]+:)?(?:(\/\/)((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/;
 
 URL.prototype.parse = function(url)
 {
@@ -13,35 +13,58 @@ URL.prototype.parse = function(url)
 	if (!parts)
 		throw "Could not parse url: " + url;
 
-	this.protocol = parts[1] || 'http';
-	this.hostname = parts[2] || '';
-	this.pathname = parts[3] || '/';
-	this.search = parts[4] || '';
+	this.protocol = parts[4] || 'http:';
+	this.hostname = parts[11] || '';
+	this.pathname = (parts[13] + (parts[16] !== undefined ? parts[16] : '')) || '/';
+	this.search = parts[18] || '';
 }
 
 URL.prototype.toString = function()
 {
-	return this.protocol + '://' + this.hostname + this.pathname + this.search;
+	return this.protocol + '//' + this.hostname + this.pathname + this.search;
+}
+
+function isProxyable(url)
+{
+	return /^https?:$/.test(url.protocol);
+}
+
+function isProxyEnabled(url)
+{
+	return url.hostname.indexOf('.proxy-ub.rug.nl') != -1;
 }
 
 function checkForValidUrl(tabId, changeInfo, tab)
 {
 	try {
 		var url = new URL(tab.url);
-	
-		if (url.hostname.indexOf('.proxy-ub.rug.nl') == -1)
+		
+		if (isProxyable(url)) {
 			chrome.pageAction.show(tabId);
+			chrome.pageAction.setIcon({
+				'tabId': tabId,
+				'path': isProxyEnabled(url) 
+					? {'19': 'logo-19.png', '38': 'logo-38.png'}
+					: {'19': 'logo-19-grey.png', '38': 'logo-38-grey.png'}
+			});
+		}
+		else {
+			chrome.pageAction.hide(tabId);
+		}
 	} catch(e) {
-		console.log(e);
+		console.error(e);
 	}
 }
 
 function switchToProxy(tab)
 {
 	var url = new URL(tab.url);
-	console.log(url.toString());
-	url.hostname += '.proxy-ub.rug.nl';
-	console.log(url.toString());
+
+	if (isProxyEnabled(url))
+		url.hostname = url.hostname.replace('.proxy-ub.rug.nl', '');
+	else
+		url.hostname += '.proxy-ub.rug.nl';
+
 	chrome.tabs.update(tab.id, {url: url.toString()});
 }
 
