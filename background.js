@@ -56,14 +56,25 @@ function checkForValidUrl(tabId, changeInfo, tab)
 	}
 }
 
+function addProxy(url) {
+	if (url.protocol === 'https:')
+		url.hostname = url.hostname.replace(/\./g, '-')
+
+	url.hostname += '.proxy-ub.rug.nl';
+}
+
+function removeProxy(url) {
+	url.hostname.replace(/\.proxy-ub\.rug\.nl$/, '');
+}
+
 function switchToProxy(tab)
 {
 	var url = new URL(tab.url);
 
 	if (isProxyEnabled(url))
-		url.hostname = url.hostname.replace('.proxy-ub.rug.nl', '');
+		removeProxy(url);
 	else
-		url.hostname += '.proxy-ub.rug.nl';
+		addProxy(url);
 
 	chrome.tabs.update(tab.id, {url: url.toString()});
 }
