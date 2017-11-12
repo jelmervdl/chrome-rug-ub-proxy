@@ -31,7 +31,7 @@ function isProxyable(url)
 
 function isProxyEnabled(url)
 {
-	return url.hostname.indexOf('.proxy-ub.rug.nl') != -1;
+	return /\.proxy-ub\.rug\.nl$/.test(url.hostname)
 }
 
 function checkForValidUrl(tabId, changeInfo, tab)
