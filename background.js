@@ -1,41 +1,35 @@
-var URL = function(url)
-{
-	if (url)
-		this.parse(url);
+class URL {
+	constructor(url) {
+		if (url)
+			this.parse(url);
+	}
+	
+	parse(url) {
+		const parts = url.match(/^(((([^:\/#\?]+:)?(?:(\/\/)((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/);
+
+		if (!parts)
+			throw "Could not parse url: " + url;
+
+		this.protocol = parts[4] || 'http:';
+		this.hostname = parts[11] || '';
+		this.pathname = (parts[13] + (parts[16] !== undefined ? parts[16] : '')) || '/';
+		this.search = parts[18] || '';
+	}
+
+	toString() {
+		return this.protocol + '//' + this.hostname + this.pathname + this.search;
+	}
 }
 
-URL.prototype.pattern = /^(((([^:\/#\?]+:)?(?:(\/\/)((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/;
-
-URL.prototype.parse = function(url)
-{
-	var parts = url.match(this.pattern);
-
-	if (!parts)
-		throw "Could not parse url: " + url;
-
-	this.protocol = parts[4] || 'http:';
-	this.hostname = parts[11] || '';
-	this.pathname = (parts[13] + (parts[16] !== undefined ? parts[16] : '')) || '/';
-	this.search = parts[18] || '';
-}
-
-URL.prototype.toString = function()
-{
-	return this.protocol + '//' + this.hostname + this.pathname + this.search;
-}
-
-function isProxyable(url)
-{
+function isProxyable(url) {
 	return /^https?:$/.test(url.protocol);
 }
 
-function isProxyEnabled(url)
-{
+function isProxyEnabled(url) {
 	return /\.proxy-ub\.rug\.nl$/.test(url.hostname)
 }
 
-function checkForValidUrl(tabId, changeInfo, tab)
-{
+function checkForValidUrl(tabId, changeInfo, tab) {
 	try {
 		var url = new URL(tab.url);
 		
@@ -78,9 +72,8 @@ function removeProxy(url) {
 		url.hostname = url.hostname.replace(/-/g, '.');
 }
 
-function switchToProxy(tab)
-{
-	var url = new URL(tab.url);
+function switchToProxy(tab) {
+	const url = new URL(tab.url);
 
 	if (isProxyEnabled(url))
 		removeProxy(url);
