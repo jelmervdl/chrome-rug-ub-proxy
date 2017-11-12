@@ -64,7 +64,10 @@ function addProxy(url) {
 }
 
 function removeProxy(url) {
-	url.hostname.replace(/\.proxy-ub\.rug\.nl$/, '');
+	url.hostname = url.hostname.replace(/\.proxy-ub\.rug\.nl$/, '');
+
+	if (url.protocol === 'https:')
+		url.hostname = url.hostname.replace(/-/g, '.');
 }
 
 function switchToProxy(tab)
