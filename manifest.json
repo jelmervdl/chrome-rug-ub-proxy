@@ -9,7 +9,7 @@
   "page_action" :
   {
     "default_icon": "logo-48.png",
-    "default_title": "Enable RUG UB Proxy"
+    "default_title": "RUG UB Proxy is not available for this page"
   },
   "permissions" : [
     "tabs"

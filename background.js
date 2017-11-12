@@ -40,12 +40,20 @@ function checkForValidUrl(tabId, changeInfo, tab)
 		var url = new URL(tab.url);
 		
 		if (isProxyable(url)) {
+			const enabled = isProxyEnabled(url);
+
 			chrome.pageAction.show(tabId);
 			chrome.pageAction.setIcon({
 				'tabId': tabId,
-				'path': isProxyEnabled(url) 
+				'path': enabled
 					? {'19': 'logo-19.png', '38': 'logo-38.png'}
 					: {'19': 'logo-19-grey.png', '38': 'logo-38-grey.png'}
+			});
+			chrome.pageAction.setTitle({
+				'tabId': tabId,
+				'title': enabled
+					? 'Disable RUG UB Proxy'
+					: 'Enable RUG UB Proxy'
 			});
 		}
 		else {
